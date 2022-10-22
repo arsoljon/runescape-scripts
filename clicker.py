@@ -162,7 +162,6 @@ def clickOre():
         #compare past and present images and check if it is necessary to click again. 
         
 
-print("done")
 done = False
  
 def controller(img, brightness=255,

@@ -1,10 +1,12 @@
 from tkinter import W
 import cv2
 
-dir_name = './clicker-pics/'
-file_name = 'pre-full.png'
+dir_name = "./clicker-pics/"
+file_name = "pre-full.png"
+path = dir_name + file_name
 
-image = cv2.imread(dir_name+file_name)
+image = cv2.imread(r'C:/Users/jonat/OneDrive/Documents/runescape-scripts/clicker-pics/pre-full.png', 1)
+
 
 height, width = image.shape[:2]
 
@@ -16,6 +18,8 @@ print(f"R={R}, G={G}, B={B}")
 
 B = image[100,100,0]
 roi = image[100 : 500, 200 : 700]
+
+
 resize = cv2.resize(image, (800,800))
 ratio = 800/width
 dim = (800, int(height * ratio))
