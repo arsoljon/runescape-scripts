@@ -3,6 +3,9 @@
 #   run getPostions() to get general cos for different objectives
 #ordinate
 
+#   run following command in terminal to install libraries.
+#   pip install -r requirements.txt
+
 
 import random, pyautogui, time, winsound
 #from numpy import append
@@ -12,17 +15,16 @@ import pywinauto as pwa
 #import win32gui
 #from overlay import Window
 
-inventoryCoord = []
-oreCoord = []
+timeRange = [1, 3]    #range to sleep between clicks
+
 
 def preClick(xRange, yRange):
     #preclick is used to make sure window is in the forefront. 
     #also helps increase randomness of clicks to avoid bot detection. 
-    timeRange = [1,2]   #range to sleep
     xBuffer = random.randint(xRange[0],xRange[1])
     yBuffer = random.randint(yRange[0],yRange[1])
     pyautogui.click(xBuffer,yBuffer)
-    time.sleep(random.randint(timeRange[0],timeRange[1]))
+    time.sleep(random.randint(1,2))
 
 def clickPositions(cycles, locations):
     #Click through the sequence of locations.
@@ -30,7 +32,7 @@ def clickPositions(cycles, locations):
         for j in range(len(locations)):
             xRange = [locations[j][0], locations[j][2]]
             yRange = [locations[j][1], locations[j][3]]
-            timeRange = [1, 2]    #range to sleep
+           
             preClick(xRange, yRange)
             x = random.randint(xRange[0],xRange[1])
             y = random.randint(yRange[0],yRange[1])
@@ -95,5 +97,5 @@ if __name__ == "__main__":
     obj_count = int(input("How many objectives? "))
     locations = getPositions(obj_count)
     cycles = int(input("How many cycles? "))
-    print(locations)
+    #print(locations)
     clickPositions(cycles, locations)
