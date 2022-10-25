@@ -143,12 +143,12 @@ def preAction(xRange, yRange):
     pyautogui.click(xBuffer,yBuffer)
     time.sleep(random.randint(timeRange[0],timeRange[1]))
 
-def clickOre():
-    items_space = 20
+def clickPosition(limit):
+    countDown = limit
     xRange = [oreCoord[0], oreCoord[2]]
     yRange = [oreCoord[1], oreCoord[3]]
     timeRange = [6, 11]    #range to sleep
-    while items_space >= 1:
+    while countDown >= 1:
         preAction(xRange, yRange)
         x = random.randint(xRange[0],xRange[1])
         y = random.randint(yRange[0],yRange[1])
@@ -157,8 +157,8 @@ def clickOre():
         #make new pic of inventory
         snapInventory('2')
         winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
-        items_space = items_space - 1
-        print(items_space)
+        countDown = countDown - 1
+        print(countDown)
         #compare past and present images and check if it is necessary to click again. 
         
 
@@ -253,7 +253,8 @@ def displayDifferentImages():
     boxImage()
  #340 bightness, 212 constrast. 
 if __name__ == '__main__':
-    while(False):
+    res = ''
+    while(res != 'q'):
         print("s : Set Positons \n m : Mine Ore")
         print("What would you like to do? ")
         res = input("Action: ")
@@ -265,9 +266,10 @@ if __name__ == '__main__':
         if(res == 'm'):
             print("Starting to mine...")
             if(len(inventoryCoord) > 0):
-                clickOre()
+                clickPosition(20)
             else:
-                print("Set Positions first!")
+                print("\nSet Positions first!")
+                time.sleep(1)
             
     #clickOre()
     #displayDifferentImages()
