@@ -9,6 +9,7 @@ from numpy import append
 import win32api, win32con, win32gui
 from pywinauto import Application
 import pywinauto as pwa
+from overlay import Window
 
 inventoryCoord = []
 oreCoord = []
@@ -31,7 +32,7 @@ def clickPositions(cycles, locations):
             y = random.randint(yRange[0],yRange[1])
             #pyautogui.click(x,y)
             hideLeftClick(x,y)
-            hideLeftClick(x,y)
+            #hideLeftClick(x,y)
             time.sleep(random.randint(timeRange[0],timeRange[1]))
         winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
 
@@ -66,9 +67,18 @@ def getPositions(obj_count):
     return allCoords
 
 def hideLeftClick(x,y):
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)
-    time.sleep(.1)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,x,y,0,0)
+    hwnd = win32gui.FindWindow(None, "RuneLite - jinzo no")  # 3671902
+    hwnd = win32gui.FindWindowEx(hwnd, None, None, None)    #1771830
+
+    click = win32api.MAKELONG(x, y)
+    pyautogui.hotkey('crtlleft', 'shiftleft', interval=2)
+
+    win32gui.SendMessage(hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, click)
+    win32gui.SendMessage(hwnd, win32con.WM_LBUTTONUP, None , click)
+
+    #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)
+    #time.sleep(.1)
+    #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,x,y,0,0)
     print('Left Click')
 
 
@@ -81,7 +91,8 @@ if __name__ == "__main__":
     temp = app.window(title_re=".*jinzo no.*")
     pid = pwa.handleprops.processid(dialogs[0])
     rect = pwa.handleprops.rectangle(dialogs[0])    #(L4, T5, R869, B1011)
-
+    win = Window()
+    Window.launch()
     obj_count = int(input("How many objectives? "))
     locations = getPositions(obj_count)
     cycles = int(input("How many cycles? "))
