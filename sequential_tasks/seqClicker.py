@@ -5,16 +5,19 @@
 
 
 import random, pyautogui, time, winsound
-from numpy import append
-import win32api, win32con, win32gui
+#from numpy import append
+import win32api, win32con
 from pywinauto import Application
 import pywinauto as pwa
-from overlay import Window
+#import win32gui
+#from overlay import Window
 
 inventoryCoord = []
 oreCoord = []
 
-def preAction(xRange, yRange):
+def preClick(xRange, yRange):
+    #preclick is used to make sure window is in the forefront. 
+    #also helps increase randomness of clicks to avoid bot detection. 
     timeRange = [1,2]   #range to sleep
     xBuffer = random.randint(xRange[0],xRange[1])
     yBuffer = random.randint(yRange[0],yRange[1])
@@ -22,19 +25,21 @@ def preAction(xRange, yRange):
     time.sleep(random.randint(timeRange[0],timeRange[1]))
 
 def clickPositions(cycles, locations):
+    #Click through the sequence of locations.
     for i in range(cycles):
         for j in range(len(locations)):
             xRange = [locations[j][0], locations[j][2]]
             yRange = [locations[j][1], locations[j][3]]
             timeRange = [1, 2]    #range to sleep
-            #preAction(xRange, yRange)
+            preClick(xRange, yRange)
             x = random.randint(xRange[0],xRange[1])
             y = random.randint(yRange[0],yRange[1])
             pyautogui.click(x,y)
             #hideLeftClick(x,y)
             #hideLeftClick(x,y)
             time.sleep(random.randint(timeRange[0],timeRange[1]))
-        winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
+    #Done with all iterations.
+    winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
 
 def getPositions(obj_count):
     allCoords = []
@@ -66,6 +71,8 @@ def getPositions(obj_count):
     print(f"Recieved Cordinates for {obj_count} objectives.")
     return allCoords
 
+
+
 def hideLeftClick(x,y):
     #mouse_event coordinates work differently than previously assumed. 
     #refer to video to adjust using the method used. 
@@ -73,8 +80,6 @@ def hideLeftClick(x,y):
     time.sleep(.1)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,x,y,0,0)
     print('Left Click')
-
-
 
 def practice():
     app = Application().connect(process=13100)
