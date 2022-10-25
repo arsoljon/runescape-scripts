@@ -1,10 +1,7 @@
-#Goal: Subsequently click different locations. 
-#Instructions: 
-#   run getPostions() to get general cos for different objectives
-#ordinate
+#Goal: Subsequently click different objectives. 
 
-#   run following command in terminal to install libraries.
-#   pip install -r requirements.txt
+#   Change the values, timeRange & _timebetweencoords, for quicker clicking and setup
+
 
 
 import random, pyautogui, time, winsound
@@ -16,6 +13,7 @@ import pywinauto as pwa
 #from overlay import Window
 
 timeRange = [1, 3]    #range to sleep between clicks
+_timebetweencoords = 5      #time it takes to search for coordinates
 
 
 def preClick(xRange, yRange):
@@ -42,16 +40,19 @@ def clickPositions(cycles, locations):
             time.sleep(random.randint(timeRange[0],timeRange[1]))
     #Done with all iterations.
     winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
+    print("CYCLES DONE")
 
 def getPositions(obj_count):
     allCoords = []
-    print("Get the four corners representing your objective.")
+    print("\nHover over 1 corner of each objective until countdown is finished.")
+    print("Then move to next corner of objective.\n")
+    time.sleep(2)
     for i in range(obj_count):
-        print(f"Getting coordinates for Objective {i + 1}: ")
+        print(f"Getting coordinates for new Objective {i + 1}: ")
         index = 0
         coordinateSet = []
         while index < 4:
-            buffer = 5 
+            buffer = _timebetweencoords 
             while buffer >= 1: 
                 print(f"{buffer}...")
                 buffer -= 1
@@ -61,6 +62,8 @@ def getPositions(obj_count):
             #append location to list of coordinates. 
             coordinateSet.append(currentLocation)
             index += 1
+            if(index >= 4):
+                print(f"Objective {i+1} DONE")
         #take lowest and highest x1, y1, x2, y2 values and put them in a list; 
         # [x1Min, y1Min, x2Max, y2Max] 
         x1 = min(coordinateSet[0][0], coordinateSet[1][0], coordinateSet[2][0], coordinateSet[3][0])
@@ -93,7 +96,8 @@ def practice():
     rect = pwa.handleprops.rectangle(dialogs[0])    #(L4, T5, R869, B1011)
 
 
-if __name__ == "__main__":
+def prompt():
+    print("The sequence of clicks is decided while getting the\ncoordinates of each objective.")
     obj_count = int(input("How many objectives? "))
     locations = getPositions(obj_count)
     cycles = int(input("How many cycles? "))
