@@ -2,9 +2,11 @@
 
 ## Error with the command `pip install -r requirements.txt` 
 > PyAutoGUI==0.9.53 
+`pip install pyautogui`
 > pywin32==304 
+`pip install pywin32`
 > pywinauto==0.6.8 
-
+`pip install pywinauto`
 
 ## Find a way to run script in background:
 `windows convert app into background task`
