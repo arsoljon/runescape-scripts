@@ -1,5 +1,11 @@
 # runescape-scripts
 
+## Error with the command `pip install -r requirements.txt` 
+> PyAutoGUI==0.9.53 
+> pywin32==304 
+> pywinauto==0.6.8 
+
+
 ## Find a way to run script in background:
 `windows convert app into background task`
 > https://stackoverflow.com/questions/59285854/is-there-a-way-to-send-a-click-event-to-a-window-in-the-background-in-python#61175997
