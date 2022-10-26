@@ -1,6 +1,6 @@
 #Goal: Subsequently click different objectives. 
 
-#   Change the values, timeRange & _timebetweencoords, for quicker clicking and setup
+#   Change the values, timeRange & timebetweencoords, for quicker clicking and setup
 
 
 
@@ -9,12 +9,40 @@ import random, pyautogui, time, winsound
 import win32api, win32con
 from pywinauto import Application
 import pywinauto as pwa
+import json
 #import win32gui
 #from overlay import Window
 
-timeRange = [1, 3]    #range to sleep between clicks
-_timebetweencoords = 5      #time it takes to search for coordinates
+timeRange = [999,999]
+timebetweencoords = 999
+config_file_path = "./data/config.json"
 
+def setup():
+    global timeRange, timebetweencoords
+    with open(config_file_path, 'r', encoding="utf-8") as f:
+        config = json.loads(f.read())
+    timeRange = [config["timeBetweenClicks"]["low"], config["timeBetweenClicks"]["high"]]
+    timebetweencoords = config["timeBetweenCoords"]
+    
+def editPrompt():
+    printCurrentConfig()
+    lowTR = int(input("Minimum seconds between clicks: "))
+    highTR = int(input("Maximum seconds between clicks: "))
+    tbc = int(input("Saving Coordinate buffer: "))
+    editConfig(lowTR, highTR, tbc)
+    setup()
+
+def editConfig(lowTR, highTR, tbc):   
+    with open(config_file_path, 'r', encoding="utf-8") as f:
+        config = json.loads(f.read())
+    config["timeBetweenClicks"]["low"] = lowTR
+    config["timeBetweenClicks"]["high"] = highTR
+    config["timeBetweenCoords"] = tbc
+    with open(config_file_path, 'w') as f:
+        json.dump(config, f)
+
+def printCurrentConfig():
+    print(f"Time between clicks : {timeRange[0]}s - {timeRange[1]}s\nSaving Coordinate buffer : {timebetweencoords}s\n")
 
 def preClick(xRange, yRange):
     #preclick is used to make sure window is in the forefront. 
@@ -52,7 +80,7 @@ def getPositions(obj_count):
         index = 0
         coordinateSet = []
         while index < 4:
-            buffer = _timebetweencoords 
+            buffer = timebetweencoords 
             while buffer >= 1: 
                 print(f"{buffer}...")
                 buffer -= 1
@@ -73,7 +101,7 @@ def getPositions(obj_count):
         someList = [x1, y1, x2, y2]
         #save the coordinates for the first objective
         allCoords.append(someList)
-    print(f"Recieved Cordinates for {obj_count} objectives.")
+    print(f"Recieved Cordinates for {obj_count} objective(s).")
     return allCoords
 
 
@@ -97,7 +125,12 @@ def practice():
 
 
 def prompt():
-    print("The sequence of clicks is decided while getting the\ncoordinates of each objective.")
+    setup()
+    printCurrentConfig()
+    print("The sequence of clicks is decided while getting the\ncoordinates of each objective.\n")
+    response = input("Edit settings (y/n)? ")
+    if response == 'y':
+        editPrompt()
     obj_count = int(input("How many objectives? "))
     locations = getPositions(obj_count)
     cycles = int(input("How many cycles? "))
