@@ -2,6 +2,7 @@
 #   pip install -r requirements.txt
 
 from sequential_tasks import seqClicker as sc
+import exact_direction as ed
 
 if __name__ == "__main__":
-    sc.prompt()
+    ed.startProcess('furnace')
