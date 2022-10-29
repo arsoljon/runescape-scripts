@@ -1,10 +1,18 @@
 #Goal: using a snap shot of the minimap located on the top-right of runeLite.
 # locate the mining symbol. Then click said mining symbol to move towards it.
 
+from sequential_tasks import seqClicker as sq
+import pyscreenshot 
+from PIL import Image
+import PIL
+import time
+import os
+
 #Locate the map
 #Locate the mine symbol
 #grab coordinates of mine symbol in map
 #click at said coordnates.
+
 
 map_coord = []
 mine_coord = []
@@ -13,7 +21,16 @@ def getMap():
     #getSnap of map
     #request a snapshot from seqClicker script.
     #retrieve the coordinates of the map.
-    pass
+    map_coord = sq.getPositions(1)
+    print(f"MAP COORDINATE : {map_coord}")
+    im = pyscreenshot.grab(bbox=(map_coord[0]))
+    im.show()
+    filename = "mine.jpg"
+    cwd = os.getcwd()
+    dirname = "{}/{}".format(cwd, "data/mine")
+    if(os.path.exists(dirname) == False):
+        os.mkdir(dirname)
+    im = im.save("{}/{}".format(dirname, filename))
 
 def foundMine():
     #with the snap from getMap, locate the mine symbol

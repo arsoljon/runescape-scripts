@@ -2,8 +2,6 @@
 
 #   Change the values, timeRange & timebetweencoords, for quicker clicking and setup
 
-
-
 import random, pyautogui, time, winsound
 #from numpy import append
 import win32api, win32con
@@ -14,7 +12,7 @@ import json
 #from overlay import Window
 
 timeRange = [999,999]
-timebetweencoords = 999
+timebetweencoords = 4
 config_file_path = "./data/config.json"
 
 def setup():
