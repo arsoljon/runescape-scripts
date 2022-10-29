@@ -68,6 +68,23 @@ def clickPositions(cycles, locations):
     winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
     print("CYCLES DONE")
 
+def getSquarePosition(length):
+    print("Place cursor in center of wanted area.")
+    coordinate = []
+    radius = int(length / 2)
+    buffer = timebetweencoords 
+    time.sleep(2)
+    while buffer >= 1: 
+        print(f"{buffer}...")
+        buffer -= 1
+        time.sleep(1)
+    coordinate = pyautogui.position()
+    x1 = coordinate[0] - radius
+    y1 = coordinate[1] - radius
+    x2 = coordinate[0] + radius
+    y2 = coordinate[1] + radius
+    return ([x1,y1,x2,y2])
+
 def getPositions(obj_count):
     allCoords = []
     print("\nHover over 1 corner of each objective until countdown is finished.")

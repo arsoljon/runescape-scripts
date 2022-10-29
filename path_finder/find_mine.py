@@ -3,10 +3,9 @@
 
 from sequential_tasks import seqClicker as sq
 import pyscreenshot 
-from PIL import Image
-import PIL
-import time
 import os
+from pynput.keyboard import Key, Controller,Listener
+
 
 #Locate the map
 #Locate the mine symbol
@@ -32,13 +31,28 @@ def getMap():
         os.mkdir(dirname)
     im = im.save("{}/{}".format(dirname, filename))
 
+def setMineSymbol():
+    map_coord = sq.getSquarePosition(13)
+    print(f"MAP COORDINATE : {map_coord}")
+    im = pyscreenshot.grab(bbox=(map_coord))
+    im.show()
+    filename = "mine-symbol.png"
+    cwd = os.getcwd()
+    dirname = "{}/{}".format(cwd, "data/mine")
+    if(os.path.exists(dirname) == False):
+        os.mkdir(dirname)
+    im = im.save("{}/{}".format(dirname, filename))
+
 def foundMine():
     #with the snap from getMap, locate the mine symbol
     #if mine symbol found, save coordinates by adding/subtracting to coords
     # of coordinate of map.
     # RETURN True IF FOUND  
     # else False
+
     return False
+
+
 
 def clickMine():
     #only if foundMine == True
@@ -48,6 +62,7 @@ def clickMine():
 
 def prompt():
     print("Looking for mine")
+    setMineSymbol()
     getMap()
     if(foundMine()):
         print("Found a mine")
