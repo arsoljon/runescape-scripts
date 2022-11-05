@@ -8,6 +8,10 @@
 > pywinauto==0.6.8 
 `pip install pywinauto`
 
+## Grab hash from image
+> Scikit
+`scikimage.data.file_hash(fname, alg='sha256')`
+
 ## Find a way to run script in background:
 `windows convert app into background task`
 > https://stackoverflow.com/questions/59285854/is-there-a-way-to-send-a-click-event-to-a-window-in-the-background-in-python#61175997
