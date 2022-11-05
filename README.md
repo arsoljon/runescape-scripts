@@ -11,6 +11,7 @@
 ## Grab hash from image
 > Scikit
 `scikimage.data.file_hash(fname, alg='sha256')`
+Using this command, compare if 2 snapshots are different. 
 
 ## Find a way to run script in background:
 `windows convert app into background task`
