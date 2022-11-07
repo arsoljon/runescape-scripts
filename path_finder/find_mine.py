@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cvlib as cv
 from cvlib.object_detection import draw_bbox
+from PIL import Image
 
 
 #Locate the map
@@ -38,7 +39,7 @@ def setMineSymbol():
     print(f"MAP COORDINATE : {map_coord}")
     im = pyscreenshot.grab(bbox=(map_coord))
     im.show()
-    filename = "inv-zoomed-out.png"
+    filename = "map.png"
     cwd = os.getcwd()
     dirname = "{}/{}".format(cwd, "data/mine")
     if(os.path.exists(dirname) == False):
@@ -46,21 +47,30 @@ def setMineSymbol():
     im = im.save("{}/{}".format(dirname, filename))
 
 def examinePicture():
-    name = ['mine-symbol.png', 'inv-half-zoomed-in.png', 'inv-zoomed-out.png']
+    name = ['mine-symbol.png', 'map.png']
     cwd = os.getcwd()
-    path = "{}\data\mine\{}".format(cwd,name[0])
-    test_path = "{}/data/mine/testing.png".format(cwd)
-    print("Path : {}".format(path))
-    img = cv2.imread(path)
-    image = cv2.resize(img, (700,600))
-    cv2.imshow("Image", image)
+    symbolPath = "{}\data\mine\{}".format(cwd,name[0])
+    mapPath  = "{}\data\mine\{}".format(cwd,name[1])
+    print("Path : {}".format(symbolPath))
+    print("Path : {}".format(mapPath))
+    img = cv2.imread(symbolPath)
+    #image = cv2.resize(img, (700,600))
+    cv2.imshow("Image", img)
     cv2.waitKey(0)
-    filename = "enlarged-pickaxe.png"
-    cwd = os.getcwd()
-    dirname = "{}/{}".format(cwd, "data/mine")
-    if(os.path.exists(dirname) == False):
-        os.mkdir(dirname)
-    cv2.imwrite("{}/data/mine/{}".format(cwd, filename), image)
+    img = cv2.imread(mapPath)
+    #image = cv2.resize(img, (700,600))
+    cv2.imshow("Image", img)
+    cv2.waitKey(0)
+    symImg = Image.open(symbolPath)
+    mapImg = Image.open(mapPath)
+    symArray = np.asarray(symImg)
+    mapArray = np.asarray(mapImg)
+    print("Symbol : {} \n Map : {}".format(symArray, mapArray))
+    if (symArray == mapArray).all(1).any():
+        print("found")
+    else: 
+        print("not found")
+
     #cv2.imshow('image', fg)
     #plt.figure(figsize=(10,10))
 
@@ -84,8 +94,6 @@ def clickMine():
 def prompt():
     examinePicture()
     print("Looking for mine")
-    #setMineSymbol()
-    getMap()
     if(foundMine()):
         print("Found a mine")
     else:
