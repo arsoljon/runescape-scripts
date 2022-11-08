@@ -25,23 +25,24 @@ def getMap():
     #getSnap of map
     #request a snapshot from seqClicker script.
     #retrieve the coordinates of the map.
-    map_coord = sq.getPositions(1)
+    map_coord = sq.getSquarePosition(110)
     print(f"MAP COORDINATE : {map_coord}")
-    im = pyscreenshot.grab(bbox=(map_coord[0]))
+    im = pyscreenshot.grab(bbox=(map_coord))
     im.show()
-    filename = "mine.jpg"
+    filename = "map.png"
     cwd = os.getcwd()
     dirname = "{}/{}".format(cwd, "data/mine")
     if(os.path.exists(dirname) == False):
         os.mkdir(dirname)
     im = im.save("{}/{}".format(dirname, filename))
 
+
 def setMineSymbol():
-    map_coord = sq.getSquarePosition(110)
-    print(f"MAP COORDINATE : {map_coord}")
-    im = pyscreenshot.grab(bbox=(map_coord))
+    symbol_coord = sq.getSquarePosition(10)
+    print(f"symbol COORDINATE : {symbol_coord}")
+    im = pyscreenshot.grab(bbox=(symbol_coord))
     im.show()
-    filename = "map.png"
+    filename = "mine-symbol.png"
     cwd = os.getcwd()
     dirname = "{}/{}".format(cwd, "data/mine")
     if(os.path.exists(dirname) == False):
@@ -84,12 +85,12 @@ def examinePicture():
             if (symIndex >= symArray.shape[0]):
                 symIndex = 0
                 mapIndex += 1
-            unkonwnSetSize = np.where(pd.Index(pd.unique(symArray[symIndex][0])).get_indexer(mapArray[mapIndex][mapIndex+symIndex]) >= 0)[0].shape[0]
+            unknownSetSize = np.where(pd.Index(pd.unique(symArray[symIndex][0])).get_indexer(mapArray[mapIndex][mapIndex+symIndex]) >= 0)[0].shape[0]
             defaultSetSize = symArray.shape[2]
-            if(unkonwnSetSize == defaultSetSize):
+            if(unknownSetSize == defaultSetSize):
                 found += 1
                 newSet.append(mapArray[mapIndex][mapIndex+symIndex])
-            if(unkonwnSetSize != defaultSetSize):
+            if(unknownSetSize != defaultSetSize):
                 break
             if(found == symArray.shape[0]):
                 print("found!!!!!")
@@ -109,7 +110,44 @@ def foundMine():
     # of coordinate of map.
     # RETURN True IF FOUND  
     # else False
-
+    name = ['mine-symbol.png', 'map.png']   #The 2 files to be compared
+    cwd = os.getcwd()
+    symbolPath = "{}\data\mine\{}".format(cwd,name[0])
+    mapPath  = "{}\data\mine\{}".format(cwd,name[1])
+    symImg = Image.open(symbolPath)
+    mapImg = Image.open(mapPath)
+    symArray = np.asarray(symImg)
+    mapArray = np.asarray(mapImg)
+    newSet = []                     #will save a result of the items that mathced.
+    #start counting from the biggest pictures first index
+    for i in range(mapArray.shape[0]):
+        #default values
+        mapIndex = i
+        symIndex = 0
+        symCounter = 0
+        found = 0
+        newSet = []
+        #Dont loop more than the maps boundaries
+        while(i < (mapArray.shape[0] - symArray.shape[0])):
+            #Check counter does not pass the rows max length
+            if (symCounter >= symArray.shape[0]):
+                symCounter = 0
+                symIndex += 1       #move 1 indices foward to the next 1D array
+                mapIndex += 1
+            if(np.array_equal(symArray[symIndex][symCounter], mapArray[mapIndex][mapIndex+symCounter])):
+                print("Symbol : {} \n NEW : {}".format(symArray[symIndex][symCounter], mapArray[mapIndex][mapIndex+symCounter]))
+                found += 1
+                symCounter += 1
+                newSet.append(mapArray[mapIndex][mapIndex+symCounter])
+            else:
+                break
+            if(found == symArray.shape[0]):
+                print("found!!!")
+                break
+        if(found == symArray.shape[0]):
+            break
+    newSet = np.array(newSet)
+    #print("Symbol : {} \n NEW : {}".format(symArray, newSet))
     return False
 
 
@@ -121,7 +159,6 @@ def clickMine():
     pass
 
 def prompt():
-    examinePicture()
     print("Looking for mine")
     if(foundMine()):
         print("Found a mine")
