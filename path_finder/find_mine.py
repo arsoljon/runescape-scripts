@@ -158,7 +158,29 @@ def clickMine():
     #Notify if clickMine is false
     pass
 
+
+
+def getMultipleMines(identifier):
+    symbol_coord = sq.getSquarePosition(10)
+    print(f"symbol COORDINATE : {symbol_coord}")
+    im = pyscreenshot.grab(bbox=(symbol_coord))
+    #im.show()
+    filename = "{}.jpg".format(identifier)
+    cwd = os.getcwd()
+    dirname = "{}/{}".format(cwd, "data/mine/Train/mining")
+    if(os.path.exists(dirname) == False):
+        os.mkdir(dirname)
+    im = im.save("{}/{}".format(dirname, filename))
+
+def getDifferentMines():
+    count = 0
+    while (True):
+        input("press enter to continue")
+        getMultipleMines(count)
+        count += 1
+
 def prompt():
+    getDifferentMines()
     print("Looking for mine")
     if(foundMine()):
         print("Found a mine")
