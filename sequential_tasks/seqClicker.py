@@ -69,6 +69,7 @@ def clickPositions(cycles, locations):
     print("CYCLES DONE")
 
 def getSquarePosition(length):
+    setup()
     print("Place cursor in center of wanted area.")
     coordinate = []
     radius = int(length / 2)
