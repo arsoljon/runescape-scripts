@@ -1,10 +1,10 @@
-# Importing all necessary libraries
-from keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D
-from keras.layers import Activation, Dropout, Flatten, Dense
-from keras import backend as K
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
 import os
+import sklearn.datasets
+from PIL import Image
 
 img_width, img_height = 10, 10
 
@@ -12,65 +12,58 @@ img_width, img_height = 10, 10
 cwd = os.getcwd()
 train_data_dir = "{}/{}".format(cwd, "data/mine/Train")
 validation_data_dir = "{}/{}".format(cwd, "data/mine/Test")
+path = "{}/{}".format(cwd, "data/mine/Train/mining/1.jpg")
+#data = sklearn.datasets.load_files(path, shuffle='False')
+img = Image.open(path)
+img = img.convert('RGB')
+r,g,b = img.getpixel((1,1))
+
+
+
 nb_train_samples = 33
 nb_validation_samples = 16
-epochs = 10
-batch_size = 16
 
-if K.image_data_format() == 'channels_first':
-	input_shape = (3, img_width, img_height)
-else:
-	input_shape = (img_width, img_height, 3)
+epochs = 1
+batch_size = 1
 
-model = Sequential()
-model.add(Conv2D(32, (2, 2), input_shape=input_shape))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(32, (2, 2)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+def getSampleData(data_dir, sample_length):
+    data = []
+    class_samples = ["fishing", "mining"]
+    for c in class_samples:
+        current_dir = "{}/{}".format(data_dir, c)
+        new_class = []
+        for j in range(sample_length):
+            pic_path = "{}/{}.jpg".format(current_dir, j)
+            img = Image.open(pic_path)
+            img = img.convert('RGB')
+            imgRGB = []
+            for x in range(img.width):
+                for y in range(img.height):
+                    r,g,b = img.getpixel((x, y))
+                    rgb = [r,g,b]
+                    imgRGB.append(rgb)
+            new_class.append(imgRGB)
+        data.append(new_class)
+    return data
 
-model.add(Conv2D(64, (2, 2)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+train = getSampleData(train_data_dir, nb_train_samples)
+test = getSampleData(validation_data_dir, nb_validation_samples)
 
-model.add(Flatten())
-model.add(Dense(64))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1))
-model.add(Activation('sigmoid'))
+print("RESULT : {}".format(len(train[0])))
+print("RESULT : {}".format(len(test[0])))
+fashion_mnist = keras.datasets.fashion_mnist
+(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 
-model.compile(loss='binary_crossentropy',
-			optimizer='rmsprop',
-			metrics=['accuracy'])
+print(train_images.shape)
+print(train_labels.shape)
+print(test_images.shape)
+print(test_images.shape)
+print(r," " , b, " ", g)
+class_names = ['T-shirt/top', 'Sneaker', 'Pullover', 'Ankle boot', 'Coat', 'Sandal', 'Shirt', 'Trouser', 'Bag', 'Dress']
 
-train_datagen = ImageDataGenerator(
-	rescale=1. / 255,
-	shear_range=0.2,
-	zoom_range=0.2,
-	horizontal_flip=True)
-
-test_datagen = ImageDataGenerator(rescale=1. / 255)
-
-train_generator = train_datagen.flow_from_directory(
-	train_data_dir,
-	target_size=(img_width, img_height),
-	batch_size=batch_size,
-	class_mode='binary')
-
-validation_generator = test_datagen.flow_from_directory(
-	validation_data_dir,
-	target_size=(img_width, img_height),
-	batch_size=batch_size,
-	class_mode='binary')
-
-model.fit_generator(
-	train_generator,
-	steps_per_epoch=nb_train_samples // batch_size,
-	epochs=epochs,
-	validation_data=validation_generator,
-	validation_steps=nb_validation_samples // batch_size)
-
-model.save_weights('model_saved.h5')
+plt.figure()
+plt.imshow(train_images[0])
+plt.colorbar()
+plt.grid(False)
+plt.show()
