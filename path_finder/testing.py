@@ -1,3 +1,5 @@
+#pre process data then determine binary vs multi class classification
+
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
@@ -7,6 +9,10 @@ from PIL import Image
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 import json, sys, os
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix
 np.set_printoptions(threshold=sys.maxsize)
 
 
@@ -78,10 +84,27 @@ def prompt():
     test_x = getSampleData(validation_data_dir, nb_validation_samples)
     train_y = getYData(nb_train_samples)
     test_y = getYData(nb_validation_samples)
-    print("RESULT : {}".format(len(train_x)))
-    print("RESULT : {}".format(len(test_x)))
-    print("RESULT : {}".format(len(train_y)))
-    print("RESULT : {}".format(len(test_y)))
+
+    X = np.append(train_x,test_x, axis=0)
+    y = np.append(train_y, test_y, axis=0)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20) 
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    X_train = scaler.transform(X_train)
+    X_test = scaler.transform(X_test) 
+    classifier = KNeighborsClassifier(n_neighbors=5)
+    classifier.fit(X_train, y_train) 
+    y_predict = classifier.predict(X_test)
+    print(confusion_matrix(y_test, y_predict))
+    print(classification_report(y_test, y_predict))
+    print("RESULT : {}".format(len(X)))
+    print("RESULT : {}".format(len(y)))
+
+    print("RESULT : {}".format(len(X_train)))
+    print("RESULT : {}".format(len(X_test)))
+    print("RESULT : {}".format(len(y_train)))
+    print("RESULT : {}".format(len(y_test)))
     save_data(train_x, train_y, test_x, test_y)
     train_x, train_y, test_x, test_y = get_data()
     print("RESULT : {}".format(len(train_x)))
